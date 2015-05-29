@@ -3,36 +3,85 @@ import java.awt.Image;
 
 public class Product {
 	private String description ;
-	private int numInStock ;
+	private int quantity ;
+	private int id ;
 	//private Image image ;
-	private float price;
+	private double price;
+	private double height ;
+	private double width ;
+	private double weight ;
 	
 	
-	public Product(String descr,int numInStock,float price){
+	public Product(int id,String descr,int quantity,double price){
+		this.id = id ;
 		this.price=price ;
 		description = descr ;
-		this.numInStock = numInStock ;
-		
+		this.quantity = quantity ;
 	}
 
 	
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public int getNumInStock() {
-		return numInStock;
+	public int getQuantity() {
+		return quantity;
 	}
 	public void setNumInStock(int numInStock) {
-		this.numInStock = numInStock;
+		this.quantity = numInStock;
 	}
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(float price) {
+	public void setPrice(double price) {
 		this.price = price;
+	}
+
+
+	public double getHeight() {
+		return height;
+	}
+
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+
+	public double getWidth() {
+		return width;
+	}
+
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+
+	public double getWeight() {
+		return weight;
+	}
+
+
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 	
 
