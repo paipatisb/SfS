@@ -3,6 +3,10 @@ import java.util.ArrayList;
 
 
 public class CustomerManager  implements Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Customer> customerList = new ArrayList() ;  ;
 	public CustomerManager() {
 		
@@ -14,7 +18,13 @@ public class CustomerManager  implements Serializable  {
 		customerList.add(aCustomer);
 	}
 	public void deleteCustomer(Customer aCustomer){
-		
+		customerList.remove(aCustomer);
+	}
+	public void deleteCustomerAtIndex(int i){
+		customerList.remove(i);
+	}
+	public Customer getCustomerAtIndex(int i){
+		return customerList.get(i);
 	}
 
 	public ArrayList<Customer> getList() {

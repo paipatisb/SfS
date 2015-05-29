@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 
 public class Customer implements Serializable {
@@ -8,6 +9,8 @@ public class Customer implements Serializable {
 	private String address , address2 ;
 	private String phoneNumber ,phoneNumber2 ;
 	private String email ;
+	private String AFM ;
+	private ArrayList<Sale> purchases ; 
 	
 	
 	public Customer(String name, String lastName, String address, String email) {
@@ -42,6 +45,46 @@ public class Customer implements Serializable {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+
+	public String getAddress2() {
+		return address2;
+	}
+
+
+	public void setAddress2(String address2) {
+		this.address2 = address2;
+	}
+
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+
+	public String getPhoneNumber2() {
+		return phoneNumber2;
+	}
+
+
+	public void setPhoneNumber2(String phoneNumber2) {
+		this.phoneNumber2 = phoneNumber2;
+	}
+
+
+	public String getAFM() {
+		return AFM;
+	}
+
+
+	public void setAFM(String aFM) {
+		AFM = aFM;
 	}
 	
 	

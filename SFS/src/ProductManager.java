@@ -15,6 +15,15 @@ public class ProductManager implements Serializable {
 	public void addProduct(Product aProduct){
 		productList.add(aProduct);
 	}
+	public void deleteProduct(Product aProduct){
+		productList.remove(aProduct);
+	}
+	public void deleteProductAtIndex(int i){
+		productList.remove(i);
+	}
+	public Product getProductAtIndex(int i){
+		return productList.get(i);
+	}
 	public ArrayList<Product> getList(){
 		return productList ;
 	}
