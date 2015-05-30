@@ -2,32 +2,33 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class CustomerManager  implements Serializable  {
+public class CustomerManager extends RecordManager   {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private ArrayList<Customer> customerList = new ArrayList() ;  ;
-	public CustomerManager() {
-		
-		customerList.add(new Customer("Vasilis","Paipatis","M.Alexandrou 3","paipatisb@gmail.com"));
-		customerList.add(new Customer("Kostas","Paipatis","M.Alexandrou 3","paipatisk@gmail.com"));
-	}
 	
-	public void addCustomer(Customer aCustomer){
-		customerList.add(aCustomer);
+	private ArrayList<Customer> customerList   ;
+	public CustomerManager() {
+		customerList = new ArrayList();
 	}
-	public void deleteCustomer(Customer aCustomer){
-		customerList.remove(aCustomer);
-	}
-	public void deleteCustomerAtIndex(int i){
+
+
+	@Override
+	public void deleteObjectAtIndex(int i) {
 		customerList.remove(i);
 	}
-	public Customer getCustomerAtIndex(int i){
+
+	public void addToList(Customer c) {
+		customerList.add(c);
+	}
+
+	@Override
+	public Customer getObjectAtIndex(int i) {
 		return customerList.get(i);
 	}
 
-	public ArrayList<Customer> getList() {
+	@Override
+	public ArrayList getList() {
 		return customerList;
 	}
 

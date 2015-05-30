@@ -1,29 +1,42 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class RecordManager {
-	private ArrayList<Object> list ;
+public abstract class RecordManager implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ArrayList list ;
+	private String[] cFieldNames={"Name","Last Name","Email","Phone Number","Phone Number2","Address","Address2","AFM"} ;
+	private String[] pFieldNames={"ID","Description","Quantity","Price","Supplier","height","Category","Width"} ;
+	private int fieldCount = 8 ;
 	
-	public RecordManager(ArrayList<Object> aList){
-		this.list = aList ;
-		
-		
-		
-	}
-	public void addToList(Object o){
-		list.add(o);
-	}
-	public void deleteProduct(Object o){
-		list.remove(o);
-	}
-	public void deleteProductAtIndex(int i){
-		list.remove(i);
-	}
-	public Object getObjectAtIndex(int i){
-		return list.get(i);
-	}
-	public ArrayList<Object> getList(){
-		return list ;
+	
+	public abstract  void deleteObjectAtIndex(int i);
+	
+	public abstract  Object getObjectAtIndex(int i);
+	public abstract ArrayList getList();
+	
+	public  String[] getCustomerFieldNames(){
+		return cFieldNames;
 	}
 	
+	public  String[] getProductFieldNames(){
+		return pFieldNames;
+
+	}
+	public void setCustomerFieldNames(String[] cFieldNames){
+		this.cFieldNames = cFieldNames ;
+	}
+
+	public void setProductFieldNames(String[] pFieldNames) {
+		this.pFieldNames = pFieldNames;
+	}
+	public int getFieldCount() {
+		return fieldCount;
+	}
+	public void setFieldCount(int fieldCount) {
+		this.fieldCount = fieldCount;
+	}
 }

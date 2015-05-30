@@ -2,23 +2,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Customer implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Customer  {
 	private String name;
 	private String lastName ;
-	private String address , address2 ;
+	private String address ,address2;
 	private String phoneNumber ,phoneNumber2 ;
 	private String email ;
 	private String AFM ;
 	private ArrayList<Sale> purchases ; 
 	
 	
-	public Customer(String name, String lastName, String address, String email) {
-		super();
+	public Customer(String name, String lastName,  String email,String phoneNumber,String phoneNumber2,String address, String address2 ,String AFM) {
 		this.name = name;
 		this.lastName = lastName;
 		this.address = address;
 		this.email = email;
+		this.phoneNumber =phoneNumber ;
+		this.phoneNumber2 = phoneNumber2 ;
+		this.address2 = address2 ;
+		this.AFM = AFM ;
 	}
 	
 	
@@ -45,16 +47,6 @@ public class Customer implements Serializable {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-
-	public String getAddress2() {
-		return address2;
-	}
-
-
-	public void setAddress2(String address2) {
-		this.address2 = address2;
 	}
 
 
@@ -85,6 +77,16 @@ public class Customer implements Serializable {
 
 	public void setAFM(String aFM) {
 		AFM = aFM;
+	}
+
+
+	public String getAddress2() {
+		return address2;
+	}
+
+
+	public void setAddress2(String address2) {
+		this.address2 = address2;
 	}
 	
 	

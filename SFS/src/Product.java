@@ -1,7 +1,12 @@
 import java.awt.Image;
+import java.io.Serializable;
 
 
-public class Product {
+public class Product implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String description ;
 	private int quantity ;
 	private int id ;
@@ -9,14 +14,19 @@ public class Product {
 	private double price;
 	private double height ;
 	private double width ;
-	private double weight ;
+	private String supplier ;
+	private String category ;
 	
 	
-	public Product(int id,String descr,int quantity,double price){
-		this.id = id ;
-		this.price=price ;
+	public Product(String id,String descr,String quantity,String price,String supplier,String height,String category,String width){
+		this.id =  Integer.parseInt(id) ;
+		this.price= Double.parseDouble(price) ;
 		description = descr ;
-		this.quantity = quantity ;
+		this.quantity = Integer.parseInt(quantity);
+		this.supplier = supplier ;
+		this.height = Double.parseDouble(height) ;
+		this.category = category ;
+		this.width = Double.parseDouble(width);
 	}
 
 	
@@ -70,18 +80,38 @@ public class Product {
 	}
 
 
-	public double getWeight() {
-		return weight;
+	public String getWeight() {
+		return category;
 	}
 
 
-	public void setWeight(double weight) {
-		this.weight = weight;
+	public void setWeight(String acategory) {
+		this.category = acategory;
 	}
 
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+
+	public String getSupplier() {
+		return supplier;
+	}
+
+
+	public void setSupplier(String supplier) {
+		this.supplier = supplier;
+	}
+
+
+	public String getCategory() {
+		return category;
+	}
+
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 
