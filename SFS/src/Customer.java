@@ -2,7 +2,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Customer  {
+public class Customer implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7042056197032278732L;
+
 	private String name;
 	private String lastName ;
 	private String address ,address2;

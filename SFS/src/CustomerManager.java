@@ -6,34 +6,15 @@ public class CustomerManager extends RecordManager   {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 4622993822073711968L;
+
+	/**
+	 * 
+	 */
 	
-	private ArrayList<Customer> customerList   ;
 	public CustomerManager() {
-		customerList = new ArrayList();
+		list = new ArrayList<Customer>();
 	}
 
-
-	@Override
-	public void deleteObjectAtIndex(int i) {
-		customerList.remove(i);
-	}
-
-	public void addToList(Customer c) {
-		customerList.add(c);
-	}
-
-	@Override
-	public Customer getObjectAtIndex(int i) {
-		return customerList.get(i);
-	}
-
-	@Override
-	public ArrayList getList() {
-		return customerList;
-	}
-
-	
-	
-	
 	
 }

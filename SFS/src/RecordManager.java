@@ -2,21 +2,30 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public abstract class RecordManager implements Serializable {
+public  class RecordManager implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList list ;
+	protected ArrayList list ;
 	private String[] cFieldNames={"Name","Last Name","Email","Phone Number","Phone Number2","Address","Address2","AFM"} ;
 	private String[] pFieldNames={"ID","Description","Quantity","Price","Supplier","height","Category","Width"} ;
 	private int fieldCount = 8 ;
 	
+	public RecordManager(){
+		
+	}
 	
-	public abstract  void deleteObjectAtIndex(int i);
+	public   void deleteObjectAtIndex(int i){
+		list.remove(i);
+	}
 	
-	public abstract  Object getObjectAtIndex(int i);
-	public abstract ArrayList getList();
+	public   Object getObjectAtIndex(int i){
+		return list.get(i);
+	}
+	public  ArrayList getList(){
+		return list ;
+	}
 	
 	public  String[] getCustomerFieldNames(){
 		return cFieldNames;

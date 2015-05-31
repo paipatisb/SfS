@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 
 
 
-public class ProductsIntFrame extends InternalFrame implements ActionListener ,MouseListener  {
+public class ProductsIntFrame extends C_P_InternalFrame implements ActionListener ,MouseListener  {
 	
 	/**
 	 * 
@@ -33,15 +33,15 @@ public class ProductsIntFrame extends InternalFrame implements ActionListener ,M
 	 * 
 	 */
 	
-	private ProductManager recordManager ;
+	private ProductManager productManager ;
 	private ArrayList<Product> productList ;
 	private JTable table;
 	private ArrayList<JTextField> txtFields;
 	private int rowOfSelectedProduct ;
 	
-	public ProductsIntFrame(ProductManager recordManager) {
-		this.recordManager = recordManager ;
-		productList = this.recordManager.getList() ;
+	public ProductsIntFrame(ProductManager productManager) {
+		this.productManager = productManager ;
+		productList =this.productManager.getList() ;
 		this.setTitle("Products");
 		
 		this.btnCreateNewRecord.addActionListener(this);
@@ -49,7 +49,6 @@ public class ProductsIntFrame extends InternalFrame implements ActionListener ,M
 		this.btnSave.addActionListener(this);
 		this.btnCreate.addActionListener(this);
 		this.btnDelete.addActionListener(this);
-		
 		createTable() ;
 		createNewProductForm();
 		
@@ -96,11 +95,11 @@ public class ProductsIntFrame extends InternalFrame implements ActionListener ,M
 	
 	public void createNewProductForm(){
 		boxPanel.removeAll();
-		String[] fieldNames = this.recordManager.getProductFieldNames();
-		txtFields = new ArrayList() ;
+		String[] fieldNames = this.productManager.getProductFieldNames();
+		txtFields = new ArrayList<JTextField>() ;
 		Box lblBox = Box.createVerticalBox();
 		Box txtBox = Box.createVerticalBox() ;
-		for(int i=0; i<recordManager.getFieldCount(); i++){
+		for(int i=0; i<productManager.getFieldCount(); i++){
 			lblBox.add(Box.createVerticalStrut(30));
 			lblBox.add(Box.createVerticalGlue());
 			lblBox.add(new JLabel(fieldNames[i]+" :"));
@@ -131,31 +130,6 @@ public class ProductsIntFrame extends InternalFrame implements ActionListener ,M
 		txtFields.get(7).setText(Double.toString(p.getWidth()));
 	}
 	
-	public void saveToFile(){
-		try{
-			File outDir = new File(MainFrame.PRODUCTS);
-			System.out.println("Attempting to save to file");
-			if(!outDir.exists()){
-				outDir.mkdir();
-				System.out.println("Have just created an outDir");
-			}
-			FileOutputStream fos 
-			= new FileOutputStream(outDir+
-									File.separator+
-									MainFrame.PRODUCTS_FILE_NAME);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			if(recordManager != null){
-				oos.writeObject(recordManager);
-				System.out.println("Attempted to save Product Manager");
-			}
-				
-			oos.close();
-			fos.close();
-		}
-		catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
 	
 
 	@Override
@@ -217,13 +191,18 @@ public class ProductsIntFrame extends InternalFrame implements ActionListener ,M
 		else if (e.getSource().equals(btnCreate)){
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Product?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if(dialogueResult==JOptionPane.YES_OPTION){
-				productList.add((new Product(txtFields.get(0).getText(),txtFields.get(1).getText(),
-						txtFields.get(2).getText(),txtFields.get(3).getText(),
-						txtFields.get(4).getText(),txtFields.get(5).getText(),
-						txtFields.get(6).getText(),txtFields.get(7).getText())));
-				createTable();
-				saveToFile();
-				cardLayout.show(mainPanel, ALL_RECORDS);
+				try{
+					productList.add((new Product(txtFields.get(0).getText(),txtFields.get(1).getText(),
+							txtFields.get(2).getText(),txtFields.get(3).getText(),
+							txtFields.get(4).getText(),txtFields.get(5).getText(),
+							txtFields.get(6).getText(),txtFields.get(7).getText())));
+					createTable();
+					FileManager.saveToFile(MainFrame.PRODUCTS_FILE_NAME, productManager);
+					cardLayout.show(mainPanel, ALL_RECORDS);
+				}
+				catch(Exception ex){
+					JOptionPane.showMessageDialog(this, "Wrong input format", "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 		else if (e.getSource().equals(btnSave)){
@@ -240,6 +219,7 @@ public class ProductsIntFrame extends InternalFrame implements ActionListener ,M
 			if(dialogueResult==JOptionPane.YES_OPTION){
 				productList.remove(rowOfSelectedProduct);
 				createTable();
+				FileManager.saveToFile(MainFrame.PRODUCTS_FILE_NAME, productManager);
 				cardLayout.show(mainPanel, ALL_RECORDS);
 			}
 		}

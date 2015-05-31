@@ -25,7 +25,7 @@ import javax.swing.UIManager ;
 public class MainFrame extends JFrame implements ActionListener {
 	public static final String PRODUCTS_FILE_NAME ="products.ser";
 	public static final String CUSTOMERS_FILE_NAME = "customers.ser";
-	private static final String SAVE_FOLDER = "Save" ;
+	public static final String SAVE_FOLDER = "Saves" ;
 	public static final String PRODUCTS = "Products" ;
 	public static final String CUSTOMERS = "Customers";
 	private static final String SALES= "Sales";
@@ -43,8 +43,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	public MainFrame() {
 		super("Solution For Sales.");
 		
-		customerManager = loadFromFile(CUSTOMERS) ;
-		productManager = loadFromFile1();
+		customerManager = (CustomerManager)FileManager.loadFromFile(MainFrame.CUSTOMERS_FILE_NAME) ;
+		productManager =(ProductManager)FileManager.loadFromFile(MainFrame.PRODUCTS_FILE_NAME);
 		
 		paintMainFrame();
 		
@@ -120,48 +120,6 @@ public class MainFrame extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public CustomerManager loadFromFile(String identifier){
-		try{
-			FileInputStream fileIn = 
-					new FileInputStream(SAVE_FOLDER+File.separator+PRODUCTS_FILE_NAME);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			productManager = (ProductManager)in.readObject();
-			fileIn.close();
-			in.close();
-		}
-		catch(Exception e){
-			System.out.println("Cannot read file "+CUSTOMERS_FILE_NAME);
-		}
-		if(customerManager == null){
-			customerManager = new CustomerManager();
-			System.out.println("Just have created a Customer Manager");
-		}
-		return customerManager;
-	}
-	
-	public ProductManager loadFromFile1(){
-		try{
-			FileInputStream fileIn = 
-					new FileInputStream(SAVE_FOLDER+File.separator+PRODUCTS_FILE_NAME);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			productManager = (ProductManager)in.readObject();
-			fileIn.close();
-			in.close();
-		}
-		catch(Exception e){
-			System.out.println("Cannot read file "+PRODUCTS_FILE_NAME);
-		}
-		if(productManager == null){
-			productManager = new ProductManager();
-			System.out.println("Just have created a Product Manager");
-		}
-		return productManager;
-	}
-	
-	
-	
-	
 	
 	
 	public void actionPerformed(ActionEvent e) {

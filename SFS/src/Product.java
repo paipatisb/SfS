@@ -6,7 +6,11 @@ public class Product implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -5214016315870798726L;
+	/**
+	 * 
+	 */
+	
 	private String description ;
 	private int quantity ;
 	private int id ;
