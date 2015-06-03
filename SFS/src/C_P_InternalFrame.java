@@ -5,12 +5,18 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+import java.awt.Container;
+
 import javax.swing.JLayeredPane;
+
 import java.awt.CardLayout;
+
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 
 
@@ -24,6 +30,11 @@ public class C_P_InternalFrame extends JInternalFrame  {
 	protected JScrollPane scrollPane,scrollPane_1;
 	protected JPanel boxPanel ;
 	public C_P_InternalFrame(){
+		BasicInternalFrameUI ui = (BasicInternalFrameUI)this.getUI();
+		Container north = (Container)ui.getNorthPane();
+		north.remove(0);
+		north.validate();
+		north.repaint();
 		
 		
 		getContentPane().setLayout(new BorderLayout(0, 0));

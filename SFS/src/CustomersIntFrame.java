@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ToolTipManager;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -32,7 +34,7 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	private ArrayList<JTextField> txtFields ;
 	private int rowOfSelectedCustomer ;
 	public CustomersIntFrame(CustomerManager customerManager) {
-
+		
 		this.setTitle("Customers");
 		this.customerManager = customerManager ;
 		this.customerList = customerManager.getList();
@@ -59,9 +61,12 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	    table.addMouseListener(this);
 	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    table.setToolTipText("Double click on a customer to show details");
+	    table.getTableHeader().setReorderingAllowed(false);
 	    ToolTipManager.sharedInstance().setDismissDelay(2000);
 		
 		fillTable();
+		this.scrollPane.setViewportView(table);
+		this.allRecordsPanel.repaint();
 	}
 	
 	public void fillTable(){
@@ -73,8 +78,6 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 		   	table.setValueAt(c.getPhoneNumber(),j,3);
 		   	j++;
 		}
-		this.scrollPane.setViewportView(table);
-		this.allRecordsPanel.repaint();
 		
 	}
 	

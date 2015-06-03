@@ -1,8 +1,13 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
 
-public class Sale {
+public class Sale implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3419437755682306776L;
 	private String customerName ;
 	private Date date ;
 	private ArrayList<Product> productList ;
