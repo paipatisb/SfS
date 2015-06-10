@@ -9,7 +9,6 @@ public class Customer implements Serializable {
 	private static final long serialVersionUID = 7042056197032278732L;
 
 	private String name;
-	private String lastName ;
 	private String address ,address2;
 	private String phoneNumber ,phoneNumber2 ;
 	private String email ;
@@ -17,9 +16,8 @@ public class Customer implements Serializable {
 	private ArrayList<Sale> purchases ; 
 	
 	
-	public Customer(String name, String lastName,  String email,String phoneNumber,String phoneNumber2,String address, String address2 ,String AFM) {
+	public Customer(String name,  String email,String phoneNumber,String phoneNumber2,String address, String address2 ,String AFM) {
 		this.name = name;
-		this.lastName = lastName;
 		this.address = address;
 		this.email = email;
 		this.phoneNumber =phoneNumber ;
@@ -34,12 +32,6 @@ public class Customer implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 	public String getAddress() {
 		return address;

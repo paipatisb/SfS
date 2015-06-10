@@ -8,19 +8,22 @@ public class Sale implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 3419437755682306776L;
-	private String customerName ;
+	private Customer customer ;
 	private Date date ;
 	private ArrayList<Product> productList ;
-	private float totalCost ;
+	private ArrayList<Integer> quantities ;
+	private double totalCost ;
 	
-	public Sale(String customerName, Date date,ArrayList<Product> productList) {
-		this.customerName = customerName;
-		this.date = date;
-		this.productList = productList;
+	public Sale() {
+		productList = new ArrayList<Product>() ;
+		quantities = new ArrayList<Integer>() ;
+	}
+	public void setCustomer(Customer aCustomer){
+		customer = aCustomer ;
 	}
 
-	public String getCustomerName() {
-		return customerName;
+	public Customer getCustomer() {
+		return customer;
 	}
 
 	public Date getDate() {
@@ -30,10 +33,20 @@ public class Sale implements Serializable {
 	public ArrayList<Product> getProductList() {
 		return productList;
 	}
+	public void addProduct(Product aProduct){
+		productList.add(aProduct);
+	}
+	public void removeProduct(int i){
+		productList.remove(i);
+	}
 
-	public float getTotalCost() {
+	public double getTotalCost() {
 		return totalCost;
 	}
-	
+	public void calculateTotalCost(){
+		for(Product p : productList){
+			totalCost =+ p.getPrice() ;
+		}
+	}
 	
 }

@@ -26,7 +26,7 @@ import javax.swing.JLayeredPane;
 
 public class NewSaleIntFrame extends JInternalFrame implements ActionListener,MouseListener  {
 	private static final String MAINPANEL = "Main Panel" ;
-	private JTextField txtSearchForCustomer;
+	private JTextField txtCustomer;
 	private JButton bottomButton_Panel ;
 	private ProductManager productManager;
 	private CustomerManager customerManager ;
@@ -40,12 +40,15 @@ public class NewSaleIntFrame extends JInternalFrame implements ActionListener,Mo
 	private JScrollPane scrollPane;
 	private JTable table;
 	private CardLayout cardLayout;
+	private Sale newSale ;
 	
 	public NewSaleIntFrame(ProductManager productManager,CustomerManager customerManager) {
 		this.productManager = productManager ;
 		productList = productManager.getList() ;
 		this.customerManager = customerManager ;
-		customerList = customerManager.getList() ;
+		customerList =customerManager.getList() ;
+		
+		newSale = new Sale();
 		
 		BasicInternalFrameUI ui = (BasicInternalFrameUI)this.getUI();
 		Container north = (Container)ui.getNorthPane();
@@ -69,14 +72,15 @@ public class NewSaleIntFrame extends JInternalFrame implements ActionListener,Mo
 		JLabel lblSearchForA = new JLabel("Customer :");
 		topSearch_Panel.add(lblSearchForA);
 		
-		txtSearchForCustomer = new JTextField();
-		topSearch_Panel.add(txtSearchForCustomer);
-		txtSearchForCustomer.setColumns(10);
+		txtCustomer = new JTextField();
+		topSearch_Panel.add(txtCustomer);
+		txtCustomer.setColumns(10);
 		
 		bottomButtonPanel = new JPanel();
 		newSalePanel.add(bottomButtonPanel, BorderLayout.SOUTH);
 		
 		btnAddToCart = new JButton("Add to Cart");
+		btnAddToCart.addActionListener(this);
 		bottomButtonPanel.add(btnAddToCart);
 		
 		btnGoToCart = new JButton("Go to Cart");
@@ -115,8 +119,21 @@ public class NewSaleIntFrame extends JInternalFrame implements ActionListener,Mo
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(btnAddToCart)){
+			int selectedItem = table.getSelectedRow();
+			if(selectedItem>-1){
+				Product aProduct =(Product)productList.get(selectedItem);
+				System.out.printf(" -->%s\n",aProduct.getSupplier());
+				newSale.addProduct(aProduct);
+				Customer c = customerManager.getCustomer(txtCustomer.getText()) ;
+				if(c!=null){
+					newSale.setCustomer(c);
+					System.out.printf("Vrike customer: %s",c.getName());
+				}
+				else System.out.println("Den vrike customer");
+			}
+		}
 		
 	}
 

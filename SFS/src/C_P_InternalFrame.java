@@ -17,18 +17,20 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.JList;
 
 
 
 
 public class C_P_InternalFrame extends JInternalFrame  {
-	protected static final String ALL_RECORDS = "All Records" ,FORM_RECORD = "A Record" ;
+	protected static final String ALL_RECORDS = "All Records" ,FORM_RECORD = "A Record" , CATEGORY_PANEL="Category Panel" ;
 	protected CardLayout cardLayout ;
 	protected JButton btnCreateNewRecord  ,btnCreate , btnCancel ,  btnSave, btnDelete;
 	protected JLabel lblTopOfForm;
 	protected JPanel   mainPanel , allRecordsPanel , newRecordPanel ;
-	protected JScrollPane scrollPane,scrollPane_1;
+	protected JScrollPane scrollPane,scrollPane_1 ;
 	protected JPanel boxPanel ;
+	protected JPanel topButtonPalen ;
 	public C_P_InternalFrame(){
 		BasicInternalFrameUI ui = (BasicInternalFrameUI)this.getUI();
 		Container north = (Container)ui.getNorthPane();
@@ -47,15 +49,17 @@ public class C_P_InternalFrame extends JInternalFrame  {
 		 */
 		allRecordsPanel = new JPanel();
 		allRecordsPanel.setLayout(new BorderLayout(0, 0));
-		JPanel topButtonPalen = new JPanel();
+		topButtonPalen = new JPanel();
 		allRecordsPanel.add(topButtonPalen, BorderLayout.NORTH);
 		btnCreateNewRecord = new JButton("Create New Record");
 		topButtonPalen.add(btnCreateNewRecord);
+		
+		
 		scrollPane = new JScrollPane();
 		allRecordsPanel.add(scrollPane, BorderLayout.CENTER);
 		
 		/*
-		 * new Reckord Panel 
+		 * new Reckord Panel (Form)
 		 */
 		newRecordPanel = new JPanel();
 		newRecordPanel.setLayout(new BorderLayout(0, 0));
@@ -76,24 +80,18 @@ public class C_P_InternalFrame extends JInternalFrame  {
 		
 		btnDelete = new JButton("Delete");
 		bottomButtonPanel.add(btnDelete);
-		/*
-		 * 
-		 */
-		mainPanel.add(allRecordsPanel, ALL_RECORDS);
-		mainPanel.add(newRecordPanel, FORM_RECORD);
-		
 		
 		boxPanel = new JPanel();
 		
 		boxPanel.setLayout(new BorderLayout(0, 0));
 		scrollPane_1.setViewportView(boxPanel);
-				
 		
 		
 		
-		
+		mainPanel.add(allRecordsPanel, ALL_RECORDS);
+		mainPanel.add(newRecordPanel, FORM_RECORD);
 	}
-	
+
 	
 	
 	

@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -29,6 +30,7 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	 */
 	private static final long serialVersionUID = -7243167485344653516L;
 	private CustomerManager customerManager ;
+	private CategoryManager custCategoryManager ;
 	private ArrayList<Customer> customerList;
 	private JTable table;
 	private ArrayList<JTextField> txtFields ;
@@ -37,6 +39,7 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 		
 		this.setTitle("Customers");
 		this.customerManager = customerManager ;
+		this.custCategoryManager = custCategoryManager ;
 		this.customerList = customerManager.getList();
 		
 		this.btnCreateNewRecord.addActionListener(this);
@@ -50,7 +53,7 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	}
 	
 	public void createTable(){
-		String col[] = {"Name","Last Name","Email","Phone Number"};
+		String col[] = {"Name","Email","Phone Number"};
 		DefaultTableModel model = new DefaultTableModel(col,customerList.size()); 
 		table = new JTable(model){
 	    	 @Override
@@ -73,9 +76,9 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 		int j =0;
 		for(Customer c : customerList){
 		   	table.setValueAt(c.getName(),j,0);
-		   	table.setValueAt(c.getLastName(), j, 1);
-		   	table.setValueAt(c.getEmail(),j,2);
-		   	table.setValueAt(c.getPhoneNumber(),j,3);
+		   	table.setValueAt(c.getEmail(),j,1);
+		   	table.setValueAt(c.getPhoneNumber(),j,2);
+		   	
 		   	j++;
 		}
 		
@@ -83,7 +86,7 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	
 	public void createProductForm(){
 		boxPanel.removeAll();
-		String[] fieldNames = this.customerManager.getCustomerFieldNames();
+		String[] fieldNames = customerManager.getCustomerFieldNames();
 		txtFields = new ArrayList() ;
 		Box lblBox = Box.createVerticalBox();
 		Box txtBox = Box.createVerticalBox() ;
@@ -108,15 +111,15 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	
 	public void fillFormWith(Customer c){
 		txtFields.get(0).setText(c.getName());
-		txtFields.get(1).setText(c.getLastName());
-		txtFields.get(2).setText(c.getEmail());
-		txtFields.get(3).setText(c.getPhoneNumber());
-		txtFields.get(4).setText(c.getPhoneNumber2());
-		txtFields.get(5).setText(c.getAddress());
-		txtFields.get(6).setText(c.getAddress2());
-		txtFields.get(7).setText(c.getAFM());
+		txtFields.get(1).setText(c.getEmail());
+		txtFields.get(2).setText(c.getPhoneNumber());
+		txtFields.get(3).setText(c.getPhoneNumber2());
+		txtFields.get(4).setText(c.getAddress());
+		txtFields.get(5).setText(c.getAddress2());
+		txtFields.get(6).setText(c.getAFM());
 		
 	}
+	
 	
 	@Override
 	public void mouseClicked(MouseEvent m) {
@@ -176,10 +179,10 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 		else if(e.getSource().equals(btnCreate)){
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Customer?", "Warning!", JOptionPane.YES_NO_OPTION);	
 			if(dialogueResult==JOptionPane.YES_OPTION){
-				customerList.add((new Customer(txtFields.get(0).getText(),txtFields.get(1).getText(),
-						txtFields.get(2).getText(),txtFields.get(3).getText(),
-						txtFields.get(4).getText(),txtFields.get(5).getText(),
-						txtFields.get(6).getText(),txtFields.get(7).getText())));
+				customerList.add((new Customer(txtFields.get(0).getText(),
+						txtFields.get(1).getText(),txtFields.get(2).getText(),
+						txtFields.get(3).getText(),txtFields.get(4).getText(),
+						txtFields.get(5).getText(),txtFields.get(6).getText())));
 				createTable();
 				FileManager.saveToFile(MainFrame.CUSTOMERS_FILE_NAME, customerManager);
 				cardLayout.show(mainPanel, ALL_RECORDS);

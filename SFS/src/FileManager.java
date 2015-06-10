@@ -12,8 +12,8 @@ public  class FileManager {
 		
 	}
 	
-	public static  RecordManager loadFromFile(String fileName){
-		RecordManager recordManager = null ;
+	public static  Manager loadFromFile(String fileName){
+		Manager recordManager = null ;
 		try{
 			FileInputStream fileIn = 
 					new FileInputStream(MainFrame.SAVE_FOLDER+File.separator+fileName);
@@ -23,6 +23,12 @@ public  class FileManager {
 			}
 			else if (fileName.equals(MainFrame.PRODUCTS_FILE_NAME)){
 				recordManager =(ProductManager)in.readObject();
+			}
+			else if(fileName.equals(MainFrame.PRODUCT_CATEGORIES_FILE_NAME)){
+				recordManager = (CategoryManager)in.readObject();
+			}
+			else if(fileName.equals(MainFrame.CUSTOMER_CATEGORIES_FILE_NAME)){
+				recordManager = (CategoryManager)in.readObject();
 			}
 			fileIn.close();
 			in.close();
@@ -37,7 +43,9 @@ public  class FileManager {
 			else if (fileName.equals(MainFrame.PRODUCTS_FILE_NAME)){
 				recordManager = new ProductManager();
 			}
-			System.out.printf("Have Just  created Manager %s\n",fileName);
+			else if(fileName.equals(MainFrame.PRODUCT_CATEGORIES_FILE_NAME)){
+				recordManager = new CategoryManager();
+			}
 		}
 		return recordManager ;
 	}
@@ -46,7 +54,7 @@ public  class FileManager {
 	
 	
 	
-	public static void saveToFile(String fileName,RecordManager recordManager){
+	public static void saveToFile(String fileName,Manager recordManager){
 		try{
 			File outDir = new File(MainFrame.SAVE_FOLDER);
 			if(!outDir.exists()){

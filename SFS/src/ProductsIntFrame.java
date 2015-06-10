@@ -11,8 +11,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -29,28 +35,42 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 	 * 
 	 */
 	private static final long serialVersionUID = -8531310730565484130L;
-	/**
-	 * 
-	 */
-	
 	private ProductManager productManager ;
+	private CategoryManager categoryManager ;
 	private ArrayList<Product> productList ;
 	private JTable table;
 	private ArrayList<JTextField> txtFields;
 	private int rowOfSelectedProduct ;
+	private JButton btnCategories ,btnAddCategory ;
+	private CategoriesPanel categoriesPanel ;
+	private JList categoryJList ;
+	private JDialog dialog  ;
 	
-	public ProductsIntFrame(ProductManager productManager) {
+	public ProductsIntFrame(ProductManager productManager,CategoryManager categoryManager) {
+		
 		this.productManager = productManager ;
+		this.categoryManager =categoryManager ;
 		productList =this.productManager.getList() ;
 		this.setTitle("Products");
 		
+		btnCategories = new JButton("Product Categories");
+		topButtonPalen.add(btnCategories);
+		btnAddCategory = new JButton("Add Category");
+		
+		
+		categoriesPanel = new CategoriesPanel(categoryManager,mainPanel,cardLayout);
+		mainPanel.add(categoriesPanel, CATEGORY_PANEL);
+		
 		this.btnCreateNewRecord.addActionListener(this);
+		this.btnCategories.addActionListener(this);
+		btnAddCategory.addActionListener(this);
 		this.btnCancel.addActionListener(this);
 		this.btnSave.addActionListener(this);
 		this.btnCreate.addActionListener(this);
 		this.btnDelete.addActionListener(this);
 		createTable() ;
 		createNewProductForm();
+
 		
 	}
 	
@@ -111,6 +131,7 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 		txtBox.add(Box.createVerticalGlue());
 		boxPanel.add(lblBox,BorderLayout.WEST);
 		boxPanel.add(txtBox,BorderLayout.CENTER);
+		boxPanel.add(btnAddCategory,BorderLayout.SOUTH);
 		
 	}
 	
@@ -121,16 +142,19 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 		txtFields.get(3).setText(Double.toString(p.getPrice()));
 		txtFields.get(4).setText(p.getSupplier());
 		txtFields.get(5).setText(Double.toString(p.getHeight()));
-		txtFields.get(6).setText(p.getCategory());
-		txtFields.get(7).setText(Double.toString(p.getWidth()));
+		txtFields.get(6).setText(Double.toString(p.getWidth()));
+		ArrayList<Category> categories = p.getCategoriesOfProduct(p) ;
+		for(int i=0; i<categoryManager.getList().size(); i++){
+			txtFields.get(7).setText(categories.get(i).getCategoryName()+" .");
+		}
 	}
-	
 	
 
 	@Override
 	public void mouseClicked(MouseEvent m) {
-		Point p = m.getPoint() ;
-		rowOfSelectedProduct = table.rowAtPoint(p);
+		if(m.getSource().equals(table)){
+			Point p = m.getPoint() ;
+			rowOfSelectedProduct = table.rowAtPoint(p);
 		 		if(m.getClickCount()==2){
 		 			lblTopOfForm.setText("Edit or Delete this Product");
 		 			btnSave.setVisible(true);
@@ -140,6 +164,11 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 		 			cardLayout.show(mainPanel, FORM_RECORD);
 		 			
 		 		}
+		}
+		else if(m.getSource().equals(dialog)){
+			Point p = m.getPoint();
+			
+		}
 		
 	}
 
@@ -183,14 +212,18 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 				cardLayout.show(mainPanel, ALL_RECORDS);
 			}
 		}
+		else if(e.getSource().equals(btnCategories)){
+			
+			cardLayout.show(mainPanel, CATEGORY_PANEL);
+		}
 		else if (e.getSource().equals(btnCreate)){
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Product?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if(dialogueResult==JOptionPane.YES_OPTION){
-				try{
+				/*try{
 					productList.add((new Product(txtFields.get(0).getText(),txtFields.get(1).getText(),
 							txtFields.get(2).getText(),txtFields.get(3).getText(),
 							txtFields.get(4).getText(),txtFields.get(5).getText(),
-							txtFields.get(6).getText(),txtFields.get(7).getText())));
+							txtFields.get(6).getText());
 					createTable();
 					FileManager.saveToFile(MainFrame.PRODUCTS_FILE_NAME, productManager);
 					cardLayout.show(mainPanel, ALL_RECORDS);
@@ -198,7 +231,26 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 				catch(Exception ex){
 					JOptionPane.showMessageDialog(this, "Wrong input format", "Error", JOptionPane.ERROR_MESSAGE);
 				}
+			*/}
+		}
+		else if(e.getSource().equals(btnAddCategory)){
+			DefaultListModel<String> listModel = new DefaultListModel<String>();
+			ArrayList<Category> categoryList = categoryManager.getList() ;
+			System.out.printf("%d", categoryList.size());
+			for(int i=0; i<categoryList.size(); i++){
+				String catName = categoryList.get(i).getCategoryName() ;
+				listModel.addElement(catName);
 			}
+			categoryJList = new JList() ;
+			categoryJList.setModel(listModel);
+			categoryJList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+
+			dialog = new JDialog();
+			dialog.addMouseListener(this);
+			dialog.setAlwaysOnTop(true);
+			dialog.getContentPane().add(new JScrollPane(categoryJList));
+			dialog.pack();
+			dialog.show();
 		}
 		else if (e.getSource().equals(btnSave)){
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Product?", "Warning!", JOptionPane.YES_NO_OPTION);

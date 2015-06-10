@@ -28,6 +28,8 @@ import javax.swing.JLabel;
 public class MainFrame extends JFrame implements ActionListener {
 	public static final String PRODUCTS_FILE_NAME ="products.ser";
 	public static final String CUSTOMERS_FILE_NAME = "customers.ser";
+	public static final String PRODUCT_CATEGORIES_FILE_NAME ="productCats.ser";
+	public static final String CUSTOMER_CATEGORIES_FILE_NAME ="customerCats.ser";
 	public static final String SAVE_FOLDER = "Saves" ;
 	public static final String PRODUCTS = "Products" ;
 	public static final String CUSTOMERS = "Customers";
@@ -37,6 +39,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	
 	private CustomerManager customerManager =null ;
 	private ProductManager  productManager  = null ; 
+	private CategoryManager prodCategoryManager = null ;
+	private CategoryManager custCategoryManager = null ;
 	
 	private JInternalFrame customerFrame , productFrame , newSaleFrame ;
 	private CardLayout cardLayout ;
@@ -51,8 +55,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		customerManager = (CustomerManager)FileManager.loadFromFile(MainFrame.CUSTOMERS_FILE_NAME) ;
 		productManager =(ProductManager)FileManager.loadFromFile(MainFrame.PRODUCTS_FILE_NAME);
-		
-		
+		prodCategoryManager = (CategoryManager)FileManager.loadFromFile(MainFrame.PRODUCT_CATEGORIES_FILE_NAME);
+		custCategoryManager = (CategoryManager)FileManager.loadFromFile(MainFrame.CUSTOMER_CATEGORIES_FILE_NAME);
 		paintMainFrame();
 		
 		
@@ -107,8 +111,9 @@ public class MainFrame extends JFrame implements ActionListener {
 		cardLayout = new CardLayout() ;
 		right_panel.setLayout(cardLayout);
 		
+		
+		productFrame = new ProductsIntFrame(productManager,prodCategoryManager) ;
 		customerFrame = new CustomersIntFrame(customerManager);
-		productFrame = new ProductsIntFrame(productManager) ;
 		newSaleFrame = new NewSaleIntFrame(productManager,customerManager);
 		
 		right_panel.add(customerFrame, CUSTOMERS);
