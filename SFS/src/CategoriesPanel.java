@@ -79,9 +79,16 @@ public class CategoriesPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(btnNewCategory)){
 			newCatName = JOptionPane.showInputDialog(this, "Enter the new Category Name");
-			categoryManager.getList().add(new Category(newCatName));
-			FileManager.saveToFile(MainFrame.PRODUCT_CATEGORIES_FILE_NAME, categoryManager);
-			paintPanel();
+			if(newCatName != null){
+				if(!newCatName.isEmpty()){
+					categoryManager.getList().add(new Category(newCatName));
+					FileManager.saveToFile(MainFrame.PRODUCT_CATEGORIES_FILE_NAME, categoryManager);
+					paintPanel();
+						
+				}
+				else JOptionPane.showMessageDialog(this, "Enter a valid name.", "Error.", JOptionPane.ERROR_MESSAGE);
+				
+			}
 		}
 		else if(e.getSource().equals(btnDeleteCategory)){
 				
@@ -89,14 +96,17 @@ public class CategoriesPanel extends JPanel implements ActionListener{
 			try{
 				Category selectedCategory = (Category) categoryManager.getList().get(indexOfSelectedCat);
 				int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this Category?", "Warning!", JOptionPane.YES_NO_OPTION);
-				if(selectedCategory.isBeingUsed()){
-					JOptionPane.showMessageDialog(this, "This category has products attached to it.", "Error", JOptionPane.ERROR_MESSAGE);
+				if(dialogueResult==JOptionPane.YES_OPTION){
+					if(selectedCategory.isBeingUsed()){
+						JOptionPane.showMessageDialog(this, "This category has products attached to it.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					else {
+						categoryManager.getList().remove(indexOfSelectedCat); 
+						FileManager.saveToFile(MainFrame.PRODUCT_CATEGORIES_FILE_NAME, categoryManager);
+						paintPanel();
+					}
 				}
-				else {
-					categoryManager.getList().remove(indexOfSelectedCat); 
-					FileManager.saveToFile(MainFrame.PRODUCT_CATEGORIES_FILE_NAME, categoryManager);
-					paintPanel();
-				}
+				
 				
 			}
 			catch(Exception ex){

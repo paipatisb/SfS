@@ -14,7 +14,7 @@ public class Product implements Serializable{
 	
 	private String description ;
 	private int quantity ;
-	private int id ;
+	private String id ;
 	//private Image image ;
 	private double price;
 	private double height ;
@@ -23,7 +23,7 @@ public class Product implements Serializable{
 	private ArrayList<Category> categoryList ;
 	
 	public Product(String id,String descr,String quantity,String price,String supplier,String height,String width,ArrayList<Category> categoryList){
-		this.id =  Integer.parseInt(id) ;
+		this.id =  id ;
 		this.price= Double.parseDouble(price) ;
 		description = descr ;
 		this.quantity = Integer.parseInt(quantity);
@@ -34,12 +34,12 @@ public class Product implements Serializable{
 	}
 
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -96,7 +96,7 @@ public class Product implements Serializable{
 	public void setSupplier(String supplier) {
 		this.supplier = supplier;
 	}
-	public ArrayList<Category> getCategoriesOfProduct(Product product){
+	public ArrayList<Category> getCategoriesOfProduct(){
 		return categoryList;
 	}
 	public void addCategory(Category category){

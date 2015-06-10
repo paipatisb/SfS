@@ -35,6 +35,7 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	private JTable table;
 	private ArrayList<JTextField> txtFields ;
 	private int rowOfSelectedCustomer ;
+	private Customer selectedCustomer ;
 	public CustomersIntFrame(CustomerManager customerManager) {
 		
 		this.setTitle("Customers");
@@ -101,6 +102,7 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 			txtBox.add(txtFields.get(i));
 			
 		}
+		
 		lblBox.add(Box.createVerticalStrut(30));
 		lblBox.add(Box.createVerticalGlue());
 		txtBox.add(Box.createVerticalStrut(20));
@@ -125,12 +127,13 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	public void mouseClicked(MouseEvent m) {
 		Point p = m.getPoint() ;
 		rowOfSelectedCustomer = table.rowAtPoint(p);
+		selectedCustomer = customerList.get(rowOfSelectedCustomer) ;
 		 		if(m.getClickCount()==2){
 		 			lblTopOfForm.setText("Edit or Delete this Customer");
 		 			btnSave.setVisible(true);
 		 			btnDelete.setVisible(true);
 		 			btnCreate.setVisible(false);
-		 			fillFormWith(customerList.get(rowOfSelectedCustomer));
+		 			fillFormWith(selectedCustomer);
 		 			cardLayout.show(mainPanel, FORM_RECORD);
 		 			
 		 		}
@@ -189,8 +192,13 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 			}
 		}
 		else if(e.getSource().equals(btnSave)){
-			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Customer?", "Warning!", JOptionPane.YES_NO_OPTION);
+			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save the changes?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if(dialogueResult==JOptionPane.YES_OPTION){
+				selectedCustomer.setName(txtFields.get(0).getText());
+				selectedCustomer.setName(txtFields.get(0).getText());
+				selectedCustomer.setName(txtFields.get(0).getText());
+				selectedCustomer.setName(txtFields.get(0).getText());
+				selectedCustomer.setName(txtFields.get(0).getText());
 				createTable();
 			}
 			
