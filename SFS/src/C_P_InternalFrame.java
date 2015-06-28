@@ -20,8 +20,9 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.JList;
 
 
-
-
+/*
+ * Periexei ta koina components pou klironomoun to ProductIntFrame kai to CustomersIntFrame
+ */
 public class C_P_InternalFrame extends JInternalFrame  {
 	protected static final String ALL_RECORDS = "All Records" ,FORM_RECORD = "A Record" , CATEGORY_PANEL="Category Panel" ;
 	protected CardLayout cardLayout ;

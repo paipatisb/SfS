@@ -9,24 +9,25 @@ public class Category implements Serializable{
 	private static final long serialVersionUID = -964045979544671492L;
 	private String categoryName ;
 	private int totalProductsSold ;
-	private ArrayList<Product> productsInThisCategory ;
+	private ArrayList<Product> productList ;
 	private boolean beingUsed  ;
+	private double totalRevenue ;//sunolika esoda apo auti tin katigoria
 	
 	public Category(String categoryName){
 		this.categoryName = categoryName ;
-		productsInThisCategory = new ArrayList<Product>();
-		if(productsInThisCategory.size() == 0){
-			beingUsed = false ;
-		}
-		else beingUsed = true;
-		
+		productList = new ArrayList<Product>();
+		totalRevenue = 0 ;
+		beingUsed = false ;		
 	}
 	public void addProduct(Product product){
-		productsInThisCategory.add(product);
+		productList.add(product);
 		beingUsed = true;
 	}
 	public void removeProduct(Product product){
-		productsInThisCategory.remove(product);
+		productList.remove(product);
+	}
+	public void addToTotalRevenue(double price){
+		totalRevenue =+ price ;
 	}
 	
 	public void setCategoryName(String newName){
@@ -39,9 +40,6 @@ public class Category implements Serializable{
 	
 	public void addToTotalProductsSold(){
 		totalProductsSold++;
-	}
-	public void setTotalProductsSold(int count){
-		totalProductsSold = count ;
 	}
 	public int getTotalProductsSold(){
 		return totalProductsSold;

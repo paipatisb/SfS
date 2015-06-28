@@ -27,8 +27,11 @@ public  class FileManager {
 			else if(fileName.equals(MainFrame.PRODUCT_CATEGORIES_FILE_NAME)){
 				recordManager = (CategoryManager)in.readObject();
 			}
-			else if(fileName.equals(MainFrame.CUSTOMER_CATEGORIES_FILE_NAME)){
-				recordManager = (CategoryManager)in.readObject();
+			else if(fileName.equals(MainFrame.SALES_FILE_NAME)){
+				recordManager = (SalesManager)in.readObject();
+			}
+			else if(fileName.equals(MainFrame.USER_FILE_NAME)){
+				recordManager = (UserManager)in.readObject();
 			}
 			fileIn.close();
 			in.close();
@@ -45,6 +48,12 @@ public  class FileManager {
 			}
 			else if(fileName.equals(MainFrame.PRODUCT_CATEGORIES_FILE_NAME)){
 				recordManager = new CategoryManager();
+			}
+			else if(fileName.equals(MainFrame.SALES_FILE_NAME)){
+				recordManager = new SalesManager();
+			}
+			else if(fileName.equals(MainFrame.USER_FILE_NAME)){
+				recordManager = new UserManager();
 			}
 		}
 		return recordManager ;

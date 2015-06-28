@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ToolTipManager;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JPanel;
 
 public class ProductsIntFrame extends C_P_InternalFrame implements ActionListener ,MouseListener  {
 	/**
@@ -39,9 +40,13 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 	private JTable table;
 	private ArrayList<JTextField> txtFields;
 	private int rowOfSelectedProduct ;
-	private JButton btnCategories ,btnAddCategory ;
+	private JButton btnCategories ,btnAddCategory , btnDeleteCategory ;
 	private CategoriesPanel categoriesPanel ;
 	private Product selectedProduct;
+	private JList<String> catJList ;
+	private JScrollPane scrollPane1 ;
+	private JPanel panel;
+	private DefaultListModel<String> listModel ;
 	public ProductsIntFrame(ProductManager productManager,CategoryManager categoryManager) {
 		
 		this.productManager = productManager ;
@@ -51,7 +56,9 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 		btnCategories = new JButton("Product Categories");
 		topButtonPalen.add(btnCategories);
 		btnAddCategory = new JButton("Add Category");
+		btnDeleteCategory = new JButton("Delete Category");
 		
+		scrollPane1=new JScrollPane();
 		
 		categoriesPanel = new CategoriesPanel(categoryManager,mainPanel,cardLayout);
 		
@@ -62,6 +69,7 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 		this.btnCreateNewRecord.addActionListener(this);
 		this.btnCategories.addActionListener(this);
 		btnAddCategory.addActionListener(this);
+		btnDeleteCategory.addActionListener(this);
 		this.btnCancel.addActionListener(this);
 		this.btnSave.addActionListener(this);
 		this.btnCreate.addActionListener(this);
@@ -123,15 +131,26 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 			txtBox.add(txtFields.get(i));
 			
 		}
-		txtFields.get(7).setEditable(false);
 		lblBox.add(Box.createVerticalStrut(30));
 		lblBox.add(Box.createVerticalGlue());
 		txtBox.add(Box.createVerticalStrut(20));
 		txtBox.add(Box.createVerticalGlue());
 		boxPanel.add(lblBox,BorderLayout.WEST);
 		boxPanel.add(txtBox,BorderLayout.CENTER);
-		boxPanel.add(btnAddCategory,BorderLayout.SOUTH);
+		JPanel categoriesPanel = new JPanel(new BorderLayout());
+		categoriesPanel.add(new JLabel("Product Categories :"),BorderLayout.WEST);
+		categoriesPanel.add(scrollPane1,BorderLayout.CENTER);
+		JPanel botPanel = new JPanel();
+		botPanel.add(btnAddCategory);
+		botPanel.add(btnDeleteCategory);
+		categoriesPanel.add(botPanel,BorderLayout.SOUTH);
+		boxPanel.add(categoriesPanel,BorderLayout.SOUTH);
 		
+		listModel = new DefaultListModel<String>();
+		catJList = new JList();
+		catJList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+		scrollPane1.setViewportView(catJList);
+		catJList.setModel(listModel);
 	}
 	
 	public void fillFormWith(Product p){
@@ -142,15 +161,14 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 		txtFields.get(4).setText(p.getSupplier());
 		txtFields.get(5).setText(Double.toString(p.getHeight()));
 		txtFields.get(6).setText(Double.toString(p.getWidth()));
-		ArrayList<Category> categories = p.getCategoriesOfProduct() ;
-		String tempCat = "" ;
-		for(int i=0; i<categories.size(); i++){
-			tempCat = tempCat+categories.get(i).getCategoryName()+" .";
+		ArrayList<Category> categories = p.getCategoriesOfProduct();
+		
+		listModel.removeAllElements();
+		for(Category c: categories){
+			listModel.addElement(c.getCategoryName());
 		}
-		/*for(int i=0; i<categoryManager.getDummyCategoryList().size(); i++){
-			tempCat = tempCat+categoryManager.getDummyCategoryList().get(i).getCategoryName()+" .";
-		}*/
-		txtFields.get(7).setText(tempCat);
+		catJList.repaint();
+		scrollPane1.repaint();
 	}
 	
 
@@ -169,8 +187,7 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 		 			cardLayout.show(mainPanel, FORM_RECORD);
 		 			
 		 		}
-		}
-		
+		}		
 	}
 
 	@Override
@@ -222,11 +239,19 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Product?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if(dialogueResult==JOptionPane.YES_OPTION){
 				try{
-					System.out.println("mpike");
-					productList.add((new Product(txtFields.get(0).getText(),txtFields.get(1).getText(),
-							txtFields.get(2).getText(),txtFields.get(3).getText(),
-							txtFields.get(4).getText(),txtFields.get(5).getText(),
-							txtFields.get(6).getText(),categoryManager.getDummyCategoryList())));
+					Product prod=new Product(txtFields.get(0).getText().toUpperCase(),
+											txtFields.get(1).getText().toUpperCase(),
+											txtFields.get(2).getText(),
+											txtFields.get(3).getText(),
+											txtFields.get(4).getText().toUpperCase(),
+											txtFields.get(5).getText(),
+											txtFields.get(6).getText());
+					
+					for(int i=0; i<categoryManager.getDummyCategoryList().size(); i++){
+						categoryManager.getDummyCategoryList().get(i).addProduct(prod);
+						prod.addCategory(categoryManager.getDummyCategoryList().get(i));
+					}
+					productList.add(prod);
 					categoryManager.clearDummyList();
 					createTable();
 					FileManager.saveToFile(MainFrame.PRODUCTS_FILE_NAME, productManager);
@@ -234,20 +259,44 @@ public class ProductsIntFrame extends C_P_InternalFrame implements ActionListene
 					cardLayout.show(mainPanel, ALL_RECORDS);
 				}
 				catch(Exception ex){
+					ex.printStackTrace();
 					JOptionPane.showMessageDialog(this, "Wrong input format", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
 		else if(e.getSource().equals(btnAddCategory)){
-			new CategoryInputFrame(categoryManager);
+			new CategoryInputFrame(categoryManager,listModel);
+			
+		}
+		else if(e.getSource().equals(btnDeleteCategory)){
+			
+			if(catJList.getSelectedValue()!=null){
+				int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this category?", "Warning!", JOptionPane.YES_NO_OPTION);
+				if(dialogueResult==JOptionPane.YES_OPTION)
+					listModel.removeElement(catJList.getSelectedValue());
+			}
+			else JOptionPane.showMessageDialog(this, "Select the category that you want to remove.", "Error.", JOptionPane.ERROR_MESSAGE);
 			
 		}
 		else if (e.getSource().equals(btnSave)){
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Product?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if(dialogueResult==JOptionPane.YES_OPTION){
-				
+				selectedProduct.setId(txtFields.get(0).getText().toUpperCase());
+				selectedProduct.setDescription(txtFields.get(1).getText().toUpperCase());
+				selectedProduct.setQuantity(Integer.parseInt(txtFields.get(2).getText()));
+				selectedProduct.setPrice(Double.parseDouble(txtFields.get(3).getText()));
+				selectedProduct.setSupplier(txtFields.get(4).getText().toUpperCase());
+				selectedProduct.setHeight(Double.parseDouble(txtFields.get(5).getText()));
+				selectedProduct.setWidth(Double.parseDouble(txtFields.get(6).getText()));
+				for(Category c: categoryManager.getDummyCategoryList()){
+					selectedProduct.addCategory(c);
+				}
+				FileManager.saveToFile(MainFrame.PRODUCTS_FILE_NAME, productManager);
 			}
+			
 			createTable();
+			FileManager.saveToFile(MainFrame.PRODUCTS_FILE_NAME, productManager);
+			FileManager.saveToFile(MainFrame.PRODUCT_CATEGORIES_FILE_NAME, categoryManager);
 			cardLayout.show(mainPanel, ALL_RECORDS);
 			
 		}

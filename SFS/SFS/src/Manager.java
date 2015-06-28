@@ -1,16 +1,27 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public  class Manager  {
+public  class Manager implements Serializable {
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	protected ArrayList aList ;
+	protected ArrayList list ;
+	
 	
 	public Manager(){
-		this.aList =new ArrayList() ;
-	}
-	public ArrayList getList(){
-		return aList ;
+		
 	}
 	
-
+	public   void deleteObjectAtIndex(int i){
+		list.remove(i);
+	}
+	
+	public   Object getObjectAtIndex(int i){
+		return list.get(i);
+	}
+	public  ArrayList getList(){
+		return list ;
+	}
 }

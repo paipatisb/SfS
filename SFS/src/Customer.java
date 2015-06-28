@@ -24,8 +24,14 @@ public class Customer implements Serializable {
 		this.phoneNumber2 = phoneNumber2 ;
 		this.address2 = address2 ;
 		this.AFM = AFM ;
+		purchases = new ArrayList<Sale>();
 	}
-	
+	public void addPurchase(Sale s){
+		purchases.add(s);
+	}
+	public ArrayList<Sale> getPurchases(){
+		return purchases;
+	}
 	
 	public String getName() {
 		return name;

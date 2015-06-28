@@ -2,27 +2,38 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class CustomerManager  implements Serializable  {
-	private ArrayList<Customer> customerList = new ArrayList() ;  ;
+public class CustomerManager extends Manager   {
+	
+	private static final long serialVersionUID = 4622993822073711968L;
+	private String[] cFieldNames={"Name","Email","Phone Number","Phone Number2","Address","Address2","AFM"} ;
+	private int fieldCount = 7 ;
+
+	/**
+	 * 
+	 */
+	
 	public CustomerManager() {
-		
-		customerList.add(new Customer("Vasilis","Paipatis","M.Alexandrou 3","paipatisb@gmail.com"));
-		customerList.add(new Customer("Kostas","Paipatis","M.Alexandrou 3","paipatisk@gmail.com"));
+		Customer c = new Customer("Guest",null,null,null,null,null,null);//Guest customer.
+		list = new ArrayList<Customer>();
+		list.add(c);
 	}
 	
-	public void addCustomer(Customer aCustomer){
-		customerList.add(aCustomer);
+	public  String[] getCustomerFieldNames(){
+		return cFieldNames;
 	}
-	public void deleteCustomer(Customer aCustomer){
-		
+	public int getFieldCount() {
+		return fieldCount;
 	}
-
-	public ArrayList<Customer> getList() {
-		return customerList;
+	public void setFieldCount(int fieldCount) {
+		this.fieldCount = fieldCount;
 	}
-
-	
-	
-	
+	public Customer getCustomer(String aName){
+		for(Customer c :(ArrayList<Customer>)list){
+			if(c.getName().equalsIgnoreCase(aName)){
+				return c ;
+			}
+		}
+		return null ;
+	}
 	
 }

@@ -10,13 +10,13 @@ public class Sale implements Serializable {
 	private static final long serialVersionUID = 3419437755682306776L;
 	private Customer customer ;
 	private Date date ;
-	private ArrayList<Product> productList ;
-	private ArrayList<Integer> quantities ;
+	private ArrayList<Product> productsSoldList ;
+	private ArrayList<Integer> quantitiesSoldList; 
 	private double totalCost ;
 	
 	public Sale() {
-		productList = new ArrayList<Product>() ;
-		quantities = new ArrayList<Integer>() ;
+		productsSoldList = new ArrayList<Product>() ;
+		quantitiesSoldList = new ArrayList<Integer>();
 	}
 	public void setCustomer(Customer aCustomer){
 		customer = aCustomer ;
@@ -29,24 +29,38 @@ public class Sale implements Serializable {
 	public Date getDate() {
 		return date;
 	}
+	public void setDate(Date  newDate){
+		date = newDate ;
+	}
 
 	public ArrayList<Product> getProductList() {
-		return productList;
+		return productsSoldList;
 	}
-	public void addProduct(Product aProduct){
-		productList.add(aProduct);
+	public void addProduct(Product aProduct,int quant){
+		productsSoldList.add(aProduct);
+		quantitiesSoldList.add(quant);
 	}
 	public void removeProduct(int i){
-		productList.remove(i);
+		productsSoldList.remove(i);
 	}
 
 	public double getTotalCost() {
 		return totalCost;
 	}
 	public void calculateTotalCost(){
-		for(Product p : productList){
-			totalCost =+ p.getPrice() ;
+		totalCost=0;
+		for(int i=0; i<productsSoldList.size(); i++){
+			Product p = productsSoldList.get(i);
+			int q = quantitiesSoldList.get(i);
+			
+			totalCost += (p.getPrice()*q) ;
 		}
+	}
+	public void setTotalCost(double totalCost){
+		this.totalCost = totalCost ;
+	}
+	public ArrayList<Integer> getQuantitiesList(){
+		return quantitiesSoldList;
 	}
 	
 }

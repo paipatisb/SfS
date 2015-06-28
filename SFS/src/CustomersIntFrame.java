@@ -127,16 +127,17 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 	public void mouseClicked(MouseEvent m) {
 		Point p = m.getPoint() ;
 		rowOfSelectedCustomer = table.rowAtPoint(p);
-		selectedCustomer = customerList.get(rowOfSelectedCustomer) ;
-		 		if(m.getClickCount()==2){
-		 			lblTopOfForm.setText("Edit or Delete this Customer");
-		 			btnSave.setVisible(true);
-		 			btnDelete.setVisible(true);
-		 			btnCreate.setVisible(false);
-		 			fillFormWith(selectedCustomer);
-		 			cardLayout.show(mainPanel, FORM_RECORD);
-		 			
-		 		}
+		if(rowOfSelectedCustomer!=0){
+			selectedCustomer = customerList.get(rowOfSelectedCustomer) ;
+			if(m.getClickCount()==2){
+				lblTopOfForm.setText("Edit or Delete this Customer");
+				btnSave.setVisible(true);
+				btnDelete.setVisible(true);
+				btnCreate.setVisible(false);
+				fillFormWith(selectedCustomer);
+				cardLayout.show(mainPanel, FORM_RECORD);
+			}
+		}
 	}
 
 	@Override
@@ -182,10 +183,10 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 		else if(e.getSource().equals(btnCreate)){
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Customer?", "Warning!", JOptionPane.YES_NO_OPTION);	
 			if(dialogueResult==JOptionPane.YES_OPTION){
-				customerList.add((new Customer(txtFields.get(0).getText(),
-						txtFields.get(1).getText(),txtFields.get(2).getText(),
-						txtFields.get(3).getText(),txtFields.get(4).getText(),
-						txtFields.get(5).getText(),txtFields.get(6).getText())));
+				customerList.add((new Customer(txtFields.get(0).getText().toUpperCase(),
+						txtFields.get(1).getText().toUpperCase(),txtFields.get(2).getText().toUpperCase(),
+						txtFields.get(3).getText().toUpperCase(),txtFields.get(4).getText().toUpperCase(),
+						txtFields.get(5).getText().toUpperCase(),txtFields.get(6).getText().toUpperCase())));
 				createTable();
 				FileManager.saveToFile(MainFrame.CUSTOMERS_FILE_NAME, customerManager);
 				cardLayout.show(mainPanel, ALL_RECORDS);
@@ -194,11 +195,13 @@ public class CustomersIntFrame extends C_P_InternalFrame implements ActionListen
 		else if(e.getSource().equals(btnSave)){
 			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save the changes?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if(dialogueResult==JOptionPane.YES_OPTION){
-				selectedCustomer.setName(txtFields.get(0).getText());
-				selectedCustomer.setName(txtFields.get(0).getText());
-				selectedCustomer.setName(txtFields.get(0).getText());
-				selectedCustomer.setName(txtFields.get(0).getText());
-				selectedCustomer.setName(txtFields.get(0).getText());
+				selectedCustomer.setName(txtFields.get(0).getText().toUpperCase());
+				selectedCustomer.setEmail(txtFields.get(1).getText().toUpperCase());
+				selectedCustomer.setPhoneNumber(txtFields.get(2).getText());
+				selectedCustomer.setPhoneNumber2(txtFields.get(3).getText());
+				selectedCustomer.setAddress(txtFields.get(4).getText().toUpperCase());
+				selectedCustomer.setAddress2(txtFields.get(5).getText().toUpperCase());
+				selectedCustomer.setAFM(txtFields.get(6).getText());
 				createTable();
 			}
 			

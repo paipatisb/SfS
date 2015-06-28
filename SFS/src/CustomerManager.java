@@ -13,7 +13,9 @@ public class CustomerManager extends Manager   {
 	 */
 	
 	public CustomerManager() {
+		Customer c = new Customer("Guest",null,null,null,null,null,null);//Guest customer.
 		list = new ArrayList<Customer>();
+		list.add(c);
 	}
 	
 	public  String[] getCustomerFieldNames(){

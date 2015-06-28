@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JInternalFrame;
@@ -29,34 +30,46 @@ public class MainFrame extends JFrame implements ActionListener {
 	public static final String PRODUCTS_FILE_NAME ="products.ser";
 	public static final String CUSTOMERS_FILE_NAME = "customers.ser";
 	public static final String PRODUCT_CATEGORIES_FILE_NAME ="productCats.ser";
-	public static final String CUSTOMER_CATEGORIES_FILE_NAME ="customerCats.ser";
+	public static final String SALES_FILE_NAME="sales.ser";
+	public static final String USER_FILE_NAME = "users.ser";
 	public static final String SAVE_FOLDER = "Saves" ;
 	public static final String PRODUCTS = "Products" ;
 	public static final String CUSTOMERS = "Customers";
-	private static final String NEWSALE= "New Sale";
+	public static final String USERS = "USERS";
+	static final String NEWSALE= "New Sale";
 	private static final String HISTORY = "History" ;
 	private JButton customersButton,newSaleButton,productsButton,historyButton ;
 	
 	private CustomerManager customerManager =null ;
 	private ProductManager  productManager  = null ; 
+	private SalesManager 	salesManager 	= null ;
 	private CategoryManager prodCategoryManager = null ;
-	private CategoryManager custCategoryManager = null ;
 	
-	private JInternalFrame customerFrame , productFrame , newSaleFrame ;
+	private CustomersIntFrame customerFrame  ;
+	private ProductsIntFrame productFrame;
+	private NewSaleIntFrame newSaleFrame;
+	private HistoryIntFrame historyFrame;
+	private UsersIntFrame userFrame;
+	
 	private CardLayout cardLayout ;
 	private JPanel right_panel,left_panel ;
 	
 	private UIManager.LookAndFeelInfo[] looks ;
-	private JButton btnNewButton;
+	private JButton userButton;
 	private JPanel panel;
 	private JLabel lblDate;
-	public MainFrame() {
+	private User user;
+	private UserManager userManager;
+	public MainFrame(User user,UserManager userManager) {
 		super("Solution For Sales.");
+		this.user = user;
+		this.userManager = userManager;
 		
 		customerManager = (CustomerManager)FileManager.loadFromFile(MainFrame.CUSTOMERS_FILE_NAME) ;
 		productManager =(ProductManager)FileManager.loadFromFile(MainFrame.PRODUCTS_FILE_NAME);
+		salesManager=(SalesManager)FileManager.loadFromFile(MainFrame.SALES_FILE_NAME);
 		prodCategoryManager = (CategoryManager)FileManager.loadFromFile(MainFrame.PRODUCT_CATEGORIES_FILE_NAME);
-		custCategoryManager = (CategoryManager)FileManager.loadFromFile(MainFrame.CUSTOMER_CATEGORIES_FILE_NAME);
+		
 		paintMainFrame();
 		
 		
@@ -94,13 +107,18 @@ public class MainFrame extends JFrame implements ActionListener {
 		newSaleButton.setPreferredSize(btnSize);
 		newSaleButton.addActionListener(this);
 		left_panel.add(newSaleButton);
-		
-		btnNewButton = new JButton("New button");
-		btnNewButton.setMaximumSize(new Dimension(2147483647, 2147483647));
-		left_panel.add(btnNewButton);
+		userButton = new JButton("Users");
+		userButton.setVisible(false);
+		if(user.isAdminRights()) {
+			userButton.setVisible(true);
+		}
+		userButton.setMaximumSize(new Dimension(2147483647, 2147483647));
+		userButton.addActionListener(this);
+		left_panel.add(userButton);
 		historyButton = new JButton("History");
 		historyButton.setMaximumSize(new Dimension(2147483647, 2147483647));
 		historyButton.setPreferredSize(btnSize);
+		historyButton.addActionListener(this);
 		left_panel.add(historyButton);
 		/*
 		 * Create Frames for  right_Panel 
@@ -112,21 +130,22 @@ public class MainFrame extends JFrame implements ActionListener {
 		right_panel.setLayout(cardLayout);
 		
 		
-		productFrame = new ProductsIntFrame(productManager,prodCategoryManager) ;
 		customerFrame = new CustomersIntFrame(customerManager);
-		newSaleFrame = new NewSaleIntFrame(productManager,customerManager);
+		productFrame = new ProductsIntFrame(productManager,prodCategoryManager) ;
+		newSaleFrame = new NewSaleIntFrame(productManager,customerManager,salesManager);
+		historyFrame = new HistoryIntFrame(salesManager);
+		userFrame = new UsersIntFrame(userManager);
 		
 		right_panel.add(customerFrame, CUSTOMERS);
 		right_panel.add(productFrame, PRODUCTS);
 		right_panel.add(newSaleFrame , NEWSALE );
+		right_panel.add(historyFrame,HISTORY);
+		right_panel.add(userFrame,USERS);
 		
 		panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.NORTH);
 		
-		lblDate = new JLabel();
-		Date date = new Date() ;
-		lblDate.setText(date.toString());
-		panel.add(lblDate);
+		
 		
 	}
 	
@@ -154,14 +173,26 @@ public class MainFrame extends JFrame implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(customersButton)){
+			customerFrame.repaint();
 			cardLayout.show(right_panel, CUSTOMERS);
 			
 		}
 		else if(e.getSource().equals(productsButton)){
+			productFrame.repaint();
+			productFrame.fillTable();
 			cardLayout.show(right_panel, PRODUCTS ) ;
 		}
 		else if(e.getSource().equals(newSaleButton)){
+			newSaleFrame.initiateComponents();
 			cardLayout.show(right_panel, NEWSALE);
+		}
+		else if(e.getSource().equals(historyButton)){
+			historyFrame.fillTable();
+			cardLayout.show(right_panel, HISTORY);
+		}
+		else if(e.getSource().equals(userButton)){
+			userFrame.fillTable();
+			cardLayout.show(right_panel, USERS);
 		}
 		
 	}

@@ -1,206 +1,228 @@
-import javax.swing.JInternalFrame;
-import javax.swing.JList;
-
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-
-import java.awt.FlowLayout;
-
-import javax.swing.BoxLayout;
-import javax.swing.table.DefaultTableModel;
-
-import java.awt.event.ActionListener;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import javax.swing.Box;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.ToolTipManager;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.table.DefaultTableModel;
 
-public class CustomersIntFrame extends JInternalFrame implements ActionListener {
-	private static final String NEWCUSTOMERPANEL = "New Customer Panel";
-	private static final String CUSTOMERSPANEL = "Customers Panel";
-	private static final String TABLEBASEPANEL = "The base panel for the table" ;
+
+
+public class CustomersIntFrame extends C_P_InternalFrame implements ActionListener,MouseListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7243167485344653516L;
 	private CustomerManager customerManager ;
-	private JButton btnNewCustomer, btnOk ,btnCancel;
-	private JPanel tableBasePanel ;
-	private CustomerTablePanel customerTablePanel ;
-	private JPanel mainCustomerPanel ,newCustomerPanel ;
-	private JPanel customersPanel;
-	private CardLayout cardLayout = new CardLayout() , tableBasePanelCardLayout = new CardLayout();
-	private JTextField txtName ,txtLastName , txtAddress , txtEmail ;
-	
-	
-	
-	public CustomersIntFrame(JFrame mainFrame ,CustomerManager customerManager) {
-		super("Customers");
+	private CategoryManager custCategoryManager ;
+	private ArrayList<Customer> customerList;
+	private JTable table;
+	private ArrayList<JTextField> txtFields ;
+	private int rowOfSelectedCustomer ;
+	private Customer selectedCustomer ;
+	public CustomersIntFrame(CustomerManager customerManager) {
+		
+		this.setTitle("Customers");
 		this.customerManager = customerManager ;
+		this.custCategoryManager = custCategoryManager ;
+		this.customerList = customerManager.getList();
 		
-		paintMainCustomerPanel();
-		btnNewCustomer.addActionListener(this);
-		btnOk.addActionListener(this);
-		btnCancel.addActionListener(this);
+		this.btnCreateNewRecord.addActionListener(this);
+		this.btnCancel.addActionListener(this);
+		this.btnSave.addActionListener(this);
+		this.btnCreate.addActionListener(this);
+		this.btnDelete.addActionListener(this);
 		
-	}
-	private void paintMainCustomerPanel(){
-		getContentPane().setLayout(new BorderLayout(0, 0));
-		mainCustomerPanel = new JPanel(cardLayout);
-		getContentPane().add(mainCustomerPanel);
-		
-		customersPanel = new JPanel();//Αρχική σελίδα των "Customers".Έχει : buttonPanel , tableBasePanel 
-		customersPanel.setLayout(new BorderLayout(0, 0));
-		JPanel buttonPanel = new JPanel();
-		customersPanel.add(buttonPanel, BorderLayout.NORTH);
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-		btnNewCustomer = new JButton("New Customer");
-		buttonPanel.add(btnNewCustomer);
-		tableBasePanel = new JPanel(); //Βάση για το customerTablePanel
-		customersPanel.add(tableBasePanel, BorderLayout.CENTER);
-		tableBasePanel.setLayout(tableBasePanelCardLayout);
-		customerTablePanel = new CustomerTablePanel();
-		tableBasePanel.add(customerTablePanel,TABLEBASEPANEL);
-		newCustomerPanel = new NewCustomerPanel() ;
-		
-		
-		mainCustomerPanel.add(newCustomerPanel,NEWCUSTOMERPANEL);
-		mainCustomerPanel.add(customersPanel,CUSTOMERSPANEL);
-		cardLayout.show(mainCustomerPanel, CUSTOMERSPANEL);
-		
+		createTable() ;
+		createProductForm();
 	}
 	
-				
-	
-	
-	
-	
-	//Class representing the JPanel which holds the Customer Table
-	public class CustomerTablePanel extends JPanel{
-		private JTable table;
-		private ArrayList<Customer> customerList ;
-		private DefaultTableModel model ;
+	public void createTable(){
+		String col[] = {"Name","Email","Phone Number"};
+		DefaultTableModel model = new DefaultTableModel(col,customerList.size()); 
+		table = new JTable(model){
+	    	 @Override
+	            public boolean isCellEditable(int row , int column) {
+	                return false ;
+	            }
+	    };
+	    table.addMouseListener(this);
+	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    table.setToolTipText("Double click on a customer to show details");
+	    table.getTableHeader().setReorderingAllowed(false);
+	    ToolTipManager.sharedInstance().setDismissDelay(2000);
 		
-		public CustomerTablePanel(){
-			customerList = customerManager.getList() ;
-			paintPanel();
-		}
-		public void paintPanel(){
-			this.removeAll();
-			this.fillTable();
-			setLayout(new BorderLayout(0, 0));
-			add(new JScrollPane(table));
-		}
-		
-		public void fillTable(){
-			String col[] = {"ID","Name","Last Name","Address","e-mail"};
-			model = new DefaultTableModel(col,customerList.size()); 
-			table = new JTable(model){
-		    	 @Override
-		            public boolean isCellEditable(int row , int column) {
-		                return false ;
-		            }
-		    };
-			int j =0;
-			for(Customer c : customerList){
-				
-		    	table.setValueAt(j+1,j,0);
-		    	table.setValueAt(c.getName(), j, 1);
-		    	table.setValueAt(c.getLastName(),j,2);
-		    	table.setValueAt(c.getAddress(),j,3);
-		    	table.setValueAt(c.getEmail(),j,4);
-		    	j++;
-			}
-		}
+		fillTable();
+		this.scrollPane.setViewportView(table);
+		this.allRecordsPanel.repaint();
 	}
 	
-	//Class representing the JPanel which holds the New Customer Form
-	public class NewCustomerPanel extends JPanel {
-		public NewCustomerPanel() {
-			paintPanel();
+	public void fillTable(){
+		int j =0;
+		for(Customer c : customerList){
+		   	table.setValueAt(c.getName(),j,0);
+		   	table.setValueAt(c.getEmail(),j,1);
+		   	table.setValueAt(c.getPhoneNumber(),j,2);
+		   	
+		   	j++;
 		}
-		public void paintPanel(){
-			this.setBackground(Color.white);
-			setLayout(null);
-			JLabel lblName = new JLabel("Name :");
-			lblName.setBounds(30, 45, 75, 14);
-			add(lblName);
-			
-			JLabel lblLastName = new JLabel("Last Name :");
-			lblLastName.setBounds(30, 70, 75, 14);
-			add(lblLastName);
-			
-			JLabel lblAddress = new JLabel("Address :");
-			lblAddress.setBounds(30, 95, 75, 14);
-			add(lblAddress);
-			
-			JLabel lblEmail = new JLabel("E-mail :");
-			lblEmail.setBounds(30, 120, 75, 14);
-			add(lblEmail);
-			
-			txtName = new JTextField();
-			txtName.setBounds(140, 42, 125, 20);
-			add(txtName);
-			txtName.setColumns(10);
-			
-			txtLastName = new JTextField();
-			txtLastName.setBounds(140, 67, 125, 20);
-			add(txtLastName);
-			txtLastName.setColumns(10);
-			
-			txtAddress = new JTextField();
-			txtAddress.setBounds(140, 92, 125, 20);
-			add(txtAddress);
-			txtAddress.setColumns(10);
-			
-			txtEmail = new JTextField();
-			txtEmail.setBounds(140, 117, 125, 20);
-			add(txtEmail);
-			txtEmail.setColumns(10);
-			
-			btnOk = new JButton("Ok");
-			btnOk.setBounds(30, 180, 89, 23);
-			add(btnOk);
-			
-			btnCancel = new JButton("Cancel");
-			btnCancel.setBounds(140, 180, 89, 23);
-			add(btnCancel);
-			
-			JLabel lblCreateNewCustomer = new JLabel("Create New Customer.");
-			lblCreateNewCustomer.setBounds(50, 20, 152, 14);
-			add(lblCreateNewCustomer);
-		}
-
+		
 	}
+	
+	public void createProductForm(){
+		boxPanel.removeAll();
+		String[] fieldNames = customerManager.getCustomerFieldNames();
+		txtFields = new ArrayList() ;
+		Box lblBox = Box.createVerticalBox();
+		Box txtBox = Box.createVerticalBox() ;
+		for(int i=0; i<customerManager.getFieldCount(); i++){
+			lblBox.add(Box.createVerticalStrut(30));
+			lblBox.add(Box.createVerticalGlue());
+			lblBox.add(new JLabel(fieldNames[i]+" :"));
+			
+			txtBox.add(Box.createVerticalStrut(20));
+			txtBox.add(Box.createVerticalGlue());
+			txtFields.add( new JTextField()) ;
+			txtBox.add(txtFields.get(i));
+			
+		}
+		
+		lblBox.add(Box.createVerticalStrut(30));
+		lblBox.add(Box.createVerticalGlue());
+		txtBox.add(Box.createVerticalStrut(20));
+		txtBox.add(Box.createVerticalGlue());
+		boxPanel.add(lblBox,BorderLayout.WEST);
+		boxPanel.add(txtBox,BorderLayout.CENTER);
+	}		
+	
+	public void fillFormWith(Customer c){
+		txtFields.get(0).setText(c.getName());
+		txtFields.get(1).setText(c.getEmail());
+		txtFields.get(2).setText(c.getPhoneNumber());
+		txtFields.get(3).setText(c.getPhoneNumber2());
+		txtFields.get(4).setText(c.getAddress());
+		txtFields.get(5).setText(c.getAddress2());
+		txtFields.get(6).setText(c.getAFM());
+		
+	}
+	
 	
 	@Override
+	public void mouseClicked(MouseEvent m) {
+		Point p = m.getPoint() ;
+		rowOfSelectedCustomer = table.rowAtPoint(p);
+		selectedCustomer = customerList.get(rowOfSelectedCustomer) ;
+		 		if(m.getClickCount()==2){
+		 			lblTopOfForm.setText("Edit or Delete this Customer");
+		 			btnSave.setVisible(true);
+		 			btnDelete.setVisible(true);
+		 			btnCreate.setVisible(false);
+		 			fillFormWith(selectedCustomer);
+		 			cardLayout.show(mainPanel, FORM_RECORD);
+		 			
+		 		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(btnNewCustomer)){
-			cardLayout.show(mainCustomerPanel, NEWCUSTOMERPANEL);
-		}
-		else if(e.getSource().equals(btnOk)){
-			int dialogResult = JOptionPane.showConfirmDialog (this, "Create this new Customer?","Warning",JOptionPane.YES_NO_OPTION);
-			if(dialogResult==JOptionPane.YES_OPTION){
-				customerManager.addCustomer(new Customer(
-						txtName.getText().toUpperCase(),
-						txtLastName.getText().toUpperCase(),
-						txtAddress.getText().toUpperCase(),
-						txtEmail.getText()));
-				txtName.setText("");txtLastName.setText("");txtAddress.setText("");txtEmail.setText("");
-				customerTablePanel.paintPanel();
-				tableBasePanelCardLayout.show(tableBasePanel, TABLEBASEPANEL);
-				cardLayout.show(mainCustomerPanel, CUSTOMERSPANEL);
-			}
+		if(e.getSource().equals(this.btnCreateNewRecord)){
+			lblTopOfForm.setText("Create New Customer");
+			btnCreate.setVisible(true);
+			btnSave.setVisible(false);
+			btnDelete.setVisible(false);
+			createProductForm();
+			cardLayout.show(mainPanel, FORM_RECORD);
 		}
 		else if(e.getSource().equals(btnCancel)){
-			txtName.setText("");txtLastName.setText("");txtAddress.setText("");txtEmail.setText("");
-			cardLayout.show(mainCustomerPanel, CUSTOMERSPANEL);
+			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave this page?", "Warning!", JOptionPane.YES_NO_OPTION);	
+			if(dialogueResult==JOptionPane.YES_OPTION){
+				cardLayout.show(mainPanel, ALL_RECORDS);
+			}
 		}
+		
+		else if(e.getSource().equals(btnCreate)){
+			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save this Customer?", "Warning!", JOptionPane.YES_NO_OPTION);	
+			if(dialogueResult==JOptionPane.YES_OPTION){
+				customerList.add((new Customer(txtFields.get(0).getText().toUpperCase(),
+						txtFields.get(1).getText().toUpperCase(),txtFields.get(2).getText().toUpperCase(),
+						txtFields.get(3).getText().toUpperCase(),txtFields.get(4).getText().toUpperCase(),
+						txtFields.get(5).getText().toUpperCase(),txtFields.get(6).getText().toUpperCase())));
+				createTable();
+				FileManager.saveToFile(MainFrame.CUSTOMERS_FILE_NAME, customerManager);
+				cardLayout.show(mainPanel, ALL_RECORDS);
+			}
+		}
+		else if(e.getSource().equals(btnSave)){
+			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Save the changes?", "Warning!", JOptionPane.YES_NO_OPTION);
+			if(dialogueResult==JOptionPane.YES_OPTION){
+				selectedCustomer.setName(txtFields.get(0).getText());
+				selectedCustomer.setEmail(txtFields.get(1).getText());
+				selectedCustomer.setPhoneNumber(txtFields.get(2).getText());
+				selectedCustomer.setPhoneNumber2(txtFields.get(3).getText());
+				selectedCustomer.setAddress(txtFields.get(4).getText());
+				selectedCustomer.setAddress2(txtFields.get(5).getText());
+				selectedCustomer.setAFM(txtFields.get(6).getText());
+				createTable();
+			}
+			
+			cardLayout.show(mainPanel, ALL_RECORDS);
+			
+		}
+		else if(e.getSource().equals(btnDelete)){
+			int dialogueResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to Delete this Customer?", "Warning!", JOptionPane.YES_NO_OPTION);
+			if(dialogueResult==JOptionPane.YES_OPTION){
+				customerList.remove(rowOfSelectedCustomer);
+				createTable();
+				FileManager.saveToFile(MainFrame.CUSTOMERS_FILE_NAME, customerManager);
+				cardLayout.show(mainPanel, ALL_RECORDS);
+			}
+			
+		}
+		
+		
+		
+		
 	}
+	
+	
+	
 }
